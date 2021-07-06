@@ -1,0 +1,29 @@
+dependencies {
+//    compile "${lib.sbStarterParent}"
+//    compile "${lib.sbStarterActuator}"
+//    compile "${lib.sbStarterWeb}"
+//    compile "${lib.sbDependencies}"
+//    implementation 'org.aspectj:aspectjweaver'
+    compile 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    compile "${lib.sbStarterAop}"
+    compile "${lib.securityCrypto}"
+    compile "${lib.freemarker}"
+    compile "${lib.springfoxSwagger2}"
+    compile "${lib.springfoxSwaggerUi}"
+    compile "${lib.swaggerAnnotations}"
+    compile "${lib.mysqlConnectorJava}"
+    compile "${lib.sbMybatisPlus}"
+    compile "${lib.mpGenerator}"
+    compile "${lib.hutool}"
+    compile "${lib.lombok}"
+    annotationProcessor "${lib.lombok}"
+
+//    compile project(":webpage")
+}
+
+sourceCompatibility = '1.8'
+jar.enabled = true
+
+test {
+    useJUnitPlatform()
+}

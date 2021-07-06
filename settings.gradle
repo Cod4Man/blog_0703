@@ -1,0 +1,6 @@
+rootProject.name = 'blog_0703'
+include 'common'
+include 'gateway'
+include 'user'
+include 'blog'
+

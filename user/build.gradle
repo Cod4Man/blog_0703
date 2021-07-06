@@ -1,0 +1,14 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    compile project(":common")
+    implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'
+    implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
+    compile "${lib.sbStarterWeb}"
+    compile "${lib.druid}"
+//    compile "${lib.jasypt}"
+}
+
+test {
+    useJUnitPlatform()
+}

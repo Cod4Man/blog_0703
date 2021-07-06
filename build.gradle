@@ -1,0 +1,119 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.2.2.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+
+}
+
+ext {
+    springBootVersion = '2.2.2.RELEASE'
+    springVersion = '5.2.2.RELEASE'
+    springCloudVersion = 'Hoxton.SR1'
+    springCloudAlibabaVersion = '2.1.0.RELEASE'
+    lombok = "1.16.18"
+    mysqlConnJavaVersion = "8.0.11"
+    druidVersion = "1.1.21"
+    MPVersion = "3.4.2"
+    MPGeneVersion = "3.4.1"
+    springSwaggerUIVersion = "2.9.2"
+    swaggerVersion = "1.5.24"
+    log4j = "1.2.17"
+    freemarker = "2.3.31"
+    jasypt = "3.0.2"
+    security = "5.2.8.RELEASE"
+    jjwt = "0.9.1"
+    hutool = "5.5.8"
+
+    lib = [
+            "sbStarterWeb"         : "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
+            "sbStarterAop"         : "org.springframework.boot:spring-boot-starter-aop:${springBootVersion}",
+            "sbStarterSecurity"    : "org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
+            "sbStarterParent"      : "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}",
+            "sbStarterTest"        : "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
+            "sbStarterDataRedis"   : "org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}",
+            "sbStarterActuator"    : "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}",
+            "sbDependencies"       : "org.springframework.boot:spring-boot-dependencies:${springBootVersion}",
+            "scDependencies"       : "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}",
+            "scAlibabaDependencies": "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${springCloudAlibabaVersion}",
+            "mysqlConnectorJava"   : "mysql:mysql-connector-java:${mysqlConnJavaVersion}",
+            "druid"                : "com.alibaba:druid:${druidVersion}",
+            "sbMybatisPlus"        : "com.baomidou:mybatis-plus-boot-starter:${MPVersion}",
+            "mpGenerator"          : "com.baomidou:mybatis-plus-generator:${MPGeneVersion}",
+            "freemarker"           : "org.freemarker:freemarker:${freemarker}",
+            "springfoxSwagger2"    : "io.springfox:springfox-swagger2:${springSwaggerUIVersion}",
+            "springfoxSwaggerUi"   : "io.springfox:springfox-swagger-ui:${springSwaggerUIVersion}",
+            "swaggerAnnotations"   : "io.swagger:swagger-annotations:${swaggerVersion}",
+            "log4j"                : "log4j:log4j:${log4j}",
+            "lombok"               : "org.projectlombok:lombok:${lombok}",
+            "jasypt"               : "com.github.ulisesbocchio:jasypt-spring-boot-starter:${jasypt}",
+            "securityCrypto"       : "org.springframework.security:spring-security-crypto:${security}",
+            "jjwt"                 : "io.jsonwebtoken:jjwt:${jjwt}",
+            "hutool"                 : "cn.hutool:hutool-all:${hutool}"
+
+    ]
+}
+
+//用allprojects方法给所有的项目添加group和version属性
+allprojects {
+    group = 'com.codeman'
+    version = '1.0'
+}
+
+//group 'org.example'
+//version '1.0-SNAPSHOT'
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'idea'
+    apply plugin: 'maven'
+    apply plugin: 'io.spring.dependency-management'
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+
+
+    repositories {
+        /**
+         * 先让gradle从本地仓库找,找不到再从下面的mavenCentral()中央仓库去找jar包
+         */
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+        maven { url "https://repo.spring.io/libs-release" }
+    }
+
+
+    dependencies {
+//        对于一些公共的，可以直接定义在父类
+        implementation "${lib.log4j}"
+
+//        annotationProcessor "${lib.lombok}"
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${springCloudAlibabaVersion}"
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+            mavenBom "org.springframework.security:spring-security-bom:${springVersion}"
+        }
+    }
+}
+
+repositories {
+    /**
+     * 先让gradle从本地仓库找,找不到再从下面的mavenCentral()中央仓库去找jar包
+     */
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+    maven { url "https://repo.spring.io/libs-release" }
+}
+//
+//dependencies {
+//    compileOnly
+//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+//}
+
+test {
+    useJUnitPlatform()
+}
