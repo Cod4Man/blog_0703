@@ -1,5 +1,6 @@
 package com.codeman.blog0703.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @version: 1.0
  */
 @RestController
-@ApiOperation("博客Controller")
+@Api("博客Controller")
 @RequestMapping("/blog")
 public class BlogController {
 

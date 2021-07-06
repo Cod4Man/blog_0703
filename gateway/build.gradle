@@ -8,10 +8,12 @@ dependencies {
     implementation 'org.springframework.security:spring-security-config'
     implementation 'org.springframework.security:spring-security-oauth2-resource-server'
     implementation 'org.springframework.security:spring-security-oauth2-jose'
-    compile 'com.nimbusds:nimbus-jose-jwt:9.8.1' /*JWT库*/
-//    compile("${lib.sbStarterWeb}") {
-////        exclude group: 'org.springframework', module: 'spring-web'
-//    }
+//    compile 'com.nimbusds:nimbus-jose-jwt:9.8.1' /*JWT库*/
+    /*compile("${lib.sbStarterWeb}") {
+        exclude group: 'org.springframework', module: 'spring-webmvc'
+        exclude group: 'org.springframework', module: 'spring-web'
+    }*/
+//    compile "${lib.sbStarterSecurityOAuth2}"
     compile "${lib.druid}"
     compile "${lib.lombok}"
     annotationProcessor "${lib.lombok}"

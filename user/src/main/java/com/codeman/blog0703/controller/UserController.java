@@ -8,7 +8,9 @@ import com.codeman.blog0703.entity.User;
 import com.codeman.blog0703.service.IUserService;
 import com.codeman.blog0703.util.LoggerUtil;
 import com.codeman.blog0703.util.PasswordEncoderUtil;
-import com.codeman.blog0703.vo.CommonOutVO;
+import com.codeman.blog0703.vo.result.Result;
+import com.codeman.blog0703.vo.result.ResultCode;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -32,7 +34,7 @@ import java.util.List;
  * @date: 2021/7/3 17:00
  * @version: 1.0
  */
-@ApiOperation(value = "用户相关操作")
+@Api(value = "用户相关操作")
 @RestController
 @Slf4j
 public class UserController {
@@ -42,37 +44,36 @@ public class UserController {
 
 
     @ApiOperation(value = "通过ID查询用户")
-    @ApiResponses({@ApiResponse(code = 200, message = "OK", response = CommonOutVO.class)})
+    @ApiResponses({@ApiResponse(code = 200, message = "OK", response = Result.class)})
     @GetMapping("/user/{id}")
-    public CommonOutVO user(@PathVariable Integer id) {
+    public Result<User> user(@PathVariable Integer id) {
         User user = userService.getById(id);
-        return new CommonOutVO(200, JSON.toJSONString(user), null);
+        return Result.success(user);
     }
 
     @ApiOperation(value = "通过用户名查询用户")
-    @ApiResponses({@ApiResponse(code = 200, message = "OK", response = CommonOutVO.class)})
+    @ApiResponses({@ApiResponse(code = 200, message = "OK", response = Result.class)})
     @GetMapping("/user/{username}")
-    public CommonOutVO user(@PathVariable String username) {
-        User user = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getName, username));
-        return new CommonOutVO(200, JSON.toJSONString(user), null);
+    public Result<User> user(@PathVariable String username) {
+        return Result.success(userService.user(username));
     }
 
     @ApiOperation("通过用户名查找用户所有角色")
     @GetMapping("/roles/{username}")
-    public List<Role> findAuthsByUsername(@PathVariable String username) {
+    public Result<List<Role>> findAuthsByUsername(@PathVariable String username) {
         // TODO 角色逻辑还未写
-        CommonOutVO user = user(username);
-        return null;
+        List<Role> roles = userService.findAuthsByUsername(username);
+        return Result.success();
     }
 
     @ApiOperation(value = "创建用户")
     @Transactional
     @PostMapping("/user")
-    public CommonOutVO createUser(@RequestBody User user) {
+    public Result createUser(@RequestBody User user) {
         StringBuffer sb = new StringBuffer();
         verifyUser(user, sb);
         if (sb.length() > 0) {
-            return new CommonOutVO(403, null, sb.toString());
+            return Result.failed(sb.toString());
         }
         List<User> list = userService.list(new LambdaQueryWrapper<User>()
                 .eq(User::getPhoneNum, user.getPhoneNum())
@@ -85,7 +86,7 @@ public class UserController {
             sb.append("该【用户名】已被注册！");
         }
         if (sb.length() > 0) {
-            return new CommonOutVO(403, null, sb.toString());
+            return Result.failed(sb.toString());
         }
         user.setPassword(PasswordEncoderUtil.encode(user.getPassword()));
         boolean save = userService.save(user);
@@ -94,14 +95,14 @@ public class UserController {
         } else {
             LoggerUtil.info("创建用户失败！", null);
         }
-        return !save ? new CommonOutVO(403, null, "创建用户失败！") : new CommonOutVO(200, "创建用户成功！", null);
+        return !save ? Result.failed("创建用户失败！") : Result.success( "创建用户成功！");
     }
 
     @ApiOperation(value = "更新用户")
     @Transactional
     @PutMapping("/user/{id}")
-    public CommonOutVO updateUser(@PathVariable Integer id, @RequestBody User user) {
-        return new CommonOutVO(500, null, "TODO");
+    public Result updateUser(@PathVariable Integer id, @RequestBody User user) {
+        return Result.success();
     }
 
     /**

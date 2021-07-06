@@ -28,6 +28,7 @@ ext {
             "sbStarterWeb"         : "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
             "sbStarterAop"         : "org.springframework.boot:spring-boot-starter-aop:${springBootVersion}",
             "sbStarterSecurity"    : "org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
+            "sbStarterSecurityOAuth2"    : "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:${springBootVersion}",
             "sbStarterParent"      : "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}",
             "sbStarterTest"        : "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
             "sbStarterDataRedis"   : "org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}",
