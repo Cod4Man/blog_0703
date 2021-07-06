@@ -9,3 +9,6 @@
 /user/.gradle/
 /user/build/
 /user/build/classes/java/main/
+/log/blog0703.log
+/gradle/wrapper/gradle-wrapper.jar
+/gradle/wrapper/gradle-wrapper.properties
