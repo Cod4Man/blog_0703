@@ -1,0 +1,86 @@
+server:
+  port: 9999
+
+# 是否演示环境
+demo: false
+
+spring:
+  application:
+    name: GATEWAY
+  # security:
+  #   oauth2:
+  #     resourceserver:
+  #       jwt:
+  #         jwk-set-uri: 'http://localhost:9999/youlai-auth/oauth/public-key'
+  redis:
+    timeout: PT10S
+    database: 0
+    host: localhost
+    port: 6379
+    password: zhj123
+    lettuce:
+      pool:
+        max-wait: PT10S
+        max-idle: 30
+        min-idle: 1
+        max-active: 100
+  cloud:
+    nacos:
+      # 注册中心
+      discovery:
+        server-addr: 47.106.198.206:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: true # 启用服务发现
+          lower-case-service-id: true
+      routes:
+        - id: 认证中心
+          uri: lb://OAUTH
+          predicates:
+            - Path=/oauth/**
+#          filters:
+#            - SwaggerHeaderFilter
+#            - StripPrefix=1
+        - id: 用户相关
+          uri: lb://USER
+          predicates:
+            - Path=/api/user/**
+#          filters:
+#            - SwaggerHeaderFilter
+#            - StripPrefix=1
+        - id: 博客相关
+          uri: lb://BLOG
+          predicates:
+            - Path=/api/blog/**
+#          filters:
+#            - SwaggerHeaderFilter
+#            - StripPrefix=1
+# 配置白名单路径(无需登录)
+security:
+  ignoreUrls:
+    - /oauth/token
+    - /webjars/**
+    - /doc.html
+    - /swagger-resources/**
+    - /*/v2/api-docs
+
+# 是否演示环境
+#demo: true
+
+# 全局参数设置
+ribbon:
+  ReadTimeout: 120000
+  ConnectTimeout: 10000
+  SocketTimeout: 10000
+  MaxAutoRetries: 0
+  MaxAutoRetriesNextServer: 1
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 40000
+

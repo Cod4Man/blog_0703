@@ -1,0 +1,15 @@
+dependencies {
+    compile "${lib.hutool}"
+    compile "${lib.lombok}"
+    annotationProcessor "${lib.lombok}"
+    compile "${lib.springfoxSwagger2}"
+    compile "${lib.springfoxSwaggerUi}"
+    compile "${lib.swaggerAnnotations}"
+}
+
+sourceCompatibility = '1.8'
+jar.enabled = true
+
+test {
+    useJUnitPlatform()
+}

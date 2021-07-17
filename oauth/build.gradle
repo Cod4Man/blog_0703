@@ -1,0 +1,18 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+//    compile project(":common")
+    compile project(":common-module:common-redis")
+    compile project(":api")
+    implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'
+    implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
+    compile "${lib.sbStarterWeb}"
+    compile "${lib.druid}"
+    compile "${lib.sbStarterSecurityOAuth2}"
+    implementation 'org.springframework.security:spring-security-oauth2-jose'
+    annotationProcessor "${lib.lombok}"
+}
+
+test {
+    useJUnitPlatform()
+}

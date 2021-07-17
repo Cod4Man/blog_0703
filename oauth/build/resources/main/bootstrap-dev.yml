@@ -1,0 +1,28 @@
+#server:
+#  port: 8000
+
+spring:
+  application:
+    name: OAUTH
+  cloud:
+    nacos:
+      config:
+        server-addr: 47.106.198.206:8848 #Nacos作为配置中心地址
+        file-extension: yml #指定yaml格式的配置
+        group: BLOG0703_GROUP  # group
+        namespace: 9405665c-0bfa-4760-9411-4c15310c0e4a # namespace
+#    sentinel:
+#      enabled: true
+#      eager: true # 取消控制台懒加载，项目启动即连接Sentinel
+#      transport:
+#        client-ip: localhost
+#        dashboard: localhost:8080
+#      datasource:
+#        # 降级规则
+#        degrade:
+#          nacos:
+#            server-addr: ${spring.cloud.nacos.discovery.server-addr}
+#            dataId: ${spring.application.name}-degrade-rules
+#            groupId: SENTINEL_GROUP
+#            data-type: json
+#            rule-type: degrade

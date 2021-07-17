@@ -1,0 +1,16 @@
+dependencies {
+    compile project(":common-module:common-model")
+
+    compile "${lib.redisson}"
+    compile "${lib.commonPool2}"
+    compile "${lib.sbStarterDataRedis}"
+    compile "${lib.lombok}"
+    annotationProcessor "${lib.lombok}"
+}
+
+sourceCompatibility = '1.8'
+jar.enabled = true
+
+test {
+    useJUnitPlatform()
+}

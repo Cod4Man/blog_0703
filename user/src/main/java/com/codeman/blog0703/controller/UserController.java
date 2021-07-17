@@ -4,12 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.codeman.blog0703.entity.Role;
+import com.codeman.blog0703.entity.SysOauthClient;
 import com.codeman.blog0703.entity.User;
 import com.codeman.blog0703.service.IUserService;
 import com.codeman.blog0703.util.LoggerUtil;
 import com.codeman.blog0703.util.PasswordEncoderUtil;
 import com.codeman.blog0703.vo.result.Result;
-import com.codeman.blog0703.vo.result.ResultCode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -37,15 +38,21 @@ import java.util.List;
 @Api(value = "用户相关操作")
 @RestController
 @Slf4j
+@RequestMapping("/user")
 public class UserController {
 
     @Resource
     private IUserService userService;
 
+    /*@ApiOperation(value = "查询客户端类型")
+    @GetMapping("/oauth-clients/{clientId}")
+    public Result<SysOauthClient> oauthClient(@PathVariable String clientId) {
+        return null;
+    }*/
 
     @ApiOperation(value = "通过ID查询用户")
     @ApiResponses({@ApiResponse(code = 200, message = "OK", response = Result.class)})
-    @GetMapping("/user/{id}")
+    @GetMapping("/{id}")
     public Result<User> user(@PathVariable Integer id) {
         User user = userService.getById(id);
         return Result.success(user);
@@ -53,7 +60,7 @@ public class UserController {
 
     @ApiOperation(value = "通过用户名查询用户")
     @ApiResponses({@ApiResponse(code = 200, message = "OK", response = Result.class)})
-    @GetMapping("/user/{username}")
+    @GetMapping("/name/{username}")
     public Result<User> user(@PathVariable String username) {
         return Result.success(userService.user(username));
     }
@@ -68,7 +75,7 @@ public class UserController {
 
     @ApiOperation(value = "创建用户")
     @Transactional
-    @PostMapping("/user")
+    @PostMapping()
     public Result createUser(@RequestBody User user) {
         StringBuffer sb = new StringBuffer();
         verifyUser(user, sb);
@@ -100,7 +107,7 @@ public class UserController {
 
     @ApiOperation(value = "更新用户")
     @Transactional
-    @PutMapping("/user/{id}")
+    @PutMapping("/{id}")
     public Result updateUser(@PathVariable Integer id, @RequestBody User user) {
         return Result.success();
     }

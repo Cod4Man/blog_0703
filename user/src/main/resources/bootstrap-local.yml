@@ -1,0 +1,78 @@
+server:
+  port: 8001
+
+#jasypt:
+#  encryptor:
+#    password: PassWord
+
+blog0703:
+  thread-pool:
+    core-thread-num: 10
+    max-thread-num: 10
+    keep-alive-time: 30
+    keep-alive-time-unit: SECONDS
+    bq-num: 30
+
+#jwt:
+#  config:
+#    enabled: true
+#    key-location: jwt.jks
+#    key-alias: jwt
+#    key-pass: 123456
+#    iss: youlai.tech
+#    sub: all
+#    access-exp-days: 30
+
+spring:
+  application:
+    name: USER
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/oauth2?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&autoReconnect=true
+    username: root
+    password: zhj123
+    dbcp2:
+      min-idle: 5                                           # 数据库连接池的最小维持连接数
+      initial-size: 5                                       # 初始化连接数
+      max-total: 5                                          # 最大连接数
+      max-wait-millis: 200                                  # 等待连接获取的最大超时时间
+      #mysql数据库验证
+      test-while-idle: false
+      validation-query: SELECT 1
+      validation-query-timeout: 10
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 47.106.198.206:8848 #配置Nacos地址
+        namespace: 9405665c-0bfa-4760-9411-4c15310c0e4a # namespace
+#      config:
+#        server-addr: 47.106.198.206:8848 #Nacos作为配置中心地址
+#        file-extension: yml #指定yaml格式的配置
+#        group: BLOG0703_GROUP  # group
+#        namespace: 9405665c-0bfa-4760-9411-4c15310c0e4a # namespace
+    #    sentinel:
+    #      transport:
+    #        dashboard: 192.168.1.170:8181 #配置Sentinel dashboard地址
+    #        port: 8719 # #默认8719，假如被占用了会自动从8719开始依次+1扫描。直至找到未被占用的端口
+    #      datasource:
+    #        ds1:
+    #          nacos:
+    #            server-addr: 192.168.1.170:8848
+    #            dataId: cloudalibaba-sentinel-service
+    #            groupId: DEFAULT_GROUP
+    #            data-type: json
+
+# 日志相关
+logging:
+  level:
+    io:
+      seata: info
+    com:
+      codeman:
+        blog0703: debug
+          mapper:
+            MallUsersMapper: debug
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml

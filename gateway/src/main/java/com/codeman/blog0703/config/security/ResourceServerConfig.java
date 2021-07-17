@@ -1,30 +1,20 @@
 package com.codeman.blog0703.config.security;
 
 import cn.hutool.core.codec.Base64;
-import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.IoUtil;
-import cn.hutool.json.JSONUtil;
 import com.codeman.blog0703.constants.AuthConstants;
-import com.codeman.blog0703.util.LoggerUtil;
-import com.codeman.blog0703.vo.result.Result;
+import com.codeman.blog0703.util.ResponseUtils;
 import com.codeman.blog0703.vo.result.ResultCode;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -37,15 +27,10 @@ import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -54,31 +39,27 @@ import java.util.List;
  * @author haoxr
  * @date 2020-05-01
  */
-// @ConfigurationProperties(prefix = "security")
-// @AllArgsConstructor
+@ConfigurationProperties(prefix = "security")
+@AllArgsConstructor
+@Configuration
 @EnableWebFluxSecurity
 public class ResourceServerConfig {
 
-    @Autowired
     private ResourceServerManager resourceServerManager;
 
-    // @Setter
-    private List<String> ignoreUrls = ListUtil.list(false, "/test");
+    @Setter
+    private List<String> ignoreUrls;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        try {
-            http.oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter())
-                    .publicKey(rsaPublicKey()) // 本地获取公钥
-                    //.jwkSetUri() // 远程获取公钥
-            ;
-        } catch (Exception e) {
-            LoggerUtil.error("rsaPublicKey错误", e);
-        }
+        http.oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter())
+                .publicKey(rsaPublicKey()) // 本地获取公钥
+                //.jwkSetUri() // 远程获取公钥
+        ;
         http.oauth2ResourceServer().authenticationEntryPoint(authenticationEntryPoint());
         http.authorizeExchange()
                 .pathMatchers(Convert.toStrArray(ignoreUrls)).permitAll()
-                // 自定义授权策略 resourceServerManager
+                // 所有请求都要过resourceServerManager校验权限
                 .anyExchange().access(resourceServerManager)
                 .and()
                 .exceptionHandling()
@@ -98,7 +79,7 @@ public class ResourceServerConfig {
     ServerAccessDeniedHandler accessDeniedHandler() {
         return (exchange, denied) -> {
             Mono<Void> mono = Mono.defer(() -> Mono.just(exchange.getResponse()))
-                    .flatMap(response -> writeErrorInfo(response, ResultCode.ACCESS_UNAUTHORIZED));
+                    .flatMap(response -> ResponseUtils.writeErrorInfo(response, ResultCode.ACCESS_UNAUTHORIZED));
             return mono;
         };
     }
@@ -110,20 +91,9 @@ public class ResourceServerConfig {
     ServerAuthenticationEntryPoint authenticationEntryPoint() {
         return (exchange, e) -> {
             Mono<Void> mono = Mono.defer(() -> Mono.just(exchange.getResponse()))
-                    .flatMap(response -> writeErrorInfo(response, ResultCode.TOKEN_INVALID_OR_EXPIRED));
+                    .flatMap(response -> ResponseUtils.writeErrorInfo(response, ResultCode.TOKEN_INVALID_OR_EXPIRED));
             return mono;
         };
-    }
-
-    public Mono writeErrorInfo(ServerHttpResponse response, ResultCode resultCode){
-        response.setStatusCode(HttpStatus.OK);
-        response.getHeaders().set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        response.getHeaders().set("Access-Control-Allow-Origin", "*");
-        response.getHeaders().set("Cache-Control", "no-cache");
-        String body = JSONUtil.toJsonStr(Result.failed(resultCode));
-        DataBuffer buffer = response.bufferFactory().wrap(body.getBytes(Charset.forName("UTF-8")));
-        return response.writeWith(Mono.just(buffer))
-                .doOnError(error -> DataBufferUtils.release(buffer));
     }
 
     /**
@@ -148,26 +118,16 @@ public class ResourceServerConfig {
      * 本地获取JWT验签公钥
      * @return
      */
+    @SneakyThrows
     @Bean
     public RSAPublicKey rsaPublicKey() {
         Resource resource = new ClassPathResource("public.key");
-        InputStream is = null;
-        RSAPublicKey rsaPublicKey = null;
-        try {
-            is = resource.getInputStream();
-            String publicKeyData = IoUtil.read(is).toString();
-            X509EncodedKeySpec keySpec = new X509EncodedKeySpec((Base64.decode(publicKeyData)));
+        InputStream is = resource.getInputStream();
+        String publicKeyData = IoUtil.read(is).toString();
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec((Base64.decode(publicKeyData)));
 
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            rsaPublicKey = (RSAPublicKey)keyFactory.generatePublic(keySpec);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
-        }
-
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        RSAPublicKey rsaPublicKey = (RSAPublicKey)keyFactory.generatePublic(keySpec);
         return rsaPublicKey;
     }
 

@@ -1,13 +1,14 @@
 apply plugin: 'org.springframework.boot'
 
 dependencies {
-    compile project(":common")
+    compile project(":common-module:common")
     implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'
     implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
     compile "${lib.sbStarterWeb}"
-    compile "${lib.sbStarterSecurityOAuth2}"
+    compile "${lib.sbStarterDataRedis}"
+//    compile "${lib.sbStarterSecurityOAuth2}"
     compile "${lib.druid}"
-    compile 'com.nimbusds:nimbus-jose-jwt:9.8.1' /*JWT库*/
+//    compile 'com.nimbusds:nimbus-jose-jwt:9.8.1' /*JWT库*/
 //    compile "${lib.jasypt}"
 }
 

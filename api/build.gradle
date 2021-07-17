@@ -1,0 +1,10 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    compile project(":common-module:common")
+    annotationProcessor "${lib.lombok}"
+}
+
+test {
+    useJUnitPlatform()
+}

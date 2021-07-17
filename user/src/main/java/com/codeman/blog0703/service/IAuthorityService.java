@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IAuthorityService extends IService<Authority> {
 
+    boolean refreshPermRolesRules();
 }

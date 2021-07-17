@@ -23,33 +23,37 @@ ext {
     security = "5.2.8.RELEASE"
     jjwt = "0.9.1"
     hutool = "5.5.8"
+    commonPool2 = "2.9.0"
+    redisson = "3.15.1"
 
     lib = [
-            "sbStarterWeb"         : "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
-            "sbStarterAop"         : "org.springframework.boot:spring-boot-starter-aop:${springBootVersion}",
-            "sbStarterSecurity"    : "org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
-            "sbStarterSecurityOAuth2"    : "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:${springBootVersion}",
-            "sbStarterParent"      : "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}",
-            "sbStarterTest"        : "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
-            "sbStarterDataRedis"   : "org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}",
-            "sbStarterActuator"    : "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}",
-            "sbDependencies"       : "org.springframework.boot:spring-boot-dependencies:${springBootVersion}",
-            "scDependencies"       : "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}",
-            "scAlibabaDependencies": "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${springCloudAlibabaVersion}",
-            "mysqlConnectorJava"   : "mysql:mysql-connector-java:${mysqlConnJavaVersion}",
-            "druid"                : "com.alibaba:druid:${druidVersion}",
-            "sbMybatisPlus"        : "com.baomidou:mybatis-plus-boot-starter:${MPVersion}",
-            "mpGenerator"          : "com.baomidou:mybatis-plus-generator:${MPGeneVersion}",
-            "freemarker"           : "org.freemarker:freemarker:${freemarker}",
-            "springfoxSwagger2"    : "io.springfox:springfox-swagger2:${springSwaggerUIVersion}",
-            "springfoxSwaggerUi"   : "io.springfox:springfox-swagger-ui:${springSwaggerUIVersion}",
-            "swaggerAnnotations"   : "io.swagger:swagger-annotations:${swaggerVersion}",
-            "log4j"                : "log4j:log4j:${log4j}",
-            "lombok"               : "org.projectlombok:lombok:${lombok}",
-            "jasypt"               : "com.github.ulisesbocchio:jasypt-spring-boot-starter:${jasypt}",
-            "securityCrypto"       : "org.springframework.security:spring-security-crypto:${security}",
-            "jjwt"                 : "io.jsonwebtoken:jjwt:${jjwt}",
-            "hutool"                 : "cn.hutool:hutool-all:${hutool}"
+            "sbStarterWeb"           : "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
+            "sbStarterAop"           : "org.springframework.boot:spring-boot-starter-aop:${springBootVersion}",
+            "sbStarterSecurity"      : "org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
+            "sbStarterSecurityOAuth2": "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:${springBootVersion}",
+            "sbStarterParent"        : "org.springframework.boot:spring-boot-starter-parent:${springBootVersion}",
+            "sbStarterTest"          : "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
+            "sbStarterDataRedis"     : "org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}",
+            "sbStarterActuator"      : "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}",
+            "sbDependencies"         : "org.springframework.boot:spring-boot-dependencies:${springBootVersion}",
+            "scDependencies"         : "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}",
+            "scAlibabaDependencies"  : "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${springCloudAlibabaVersion}",
+            "mysqlConnectorJava"     : "mysql:mysql-connector-java:${mysqlConnJavaVersion}",
+            "druid"                  : "com.alibaba:druid:${druidVersion}",
+            "sbMybatisPlus"          : "com.baomidou:mybatis-plus-boot-starter:${MPVersion}",
+            "mpGenerator"            : "com.baomidou:mybatis-plus-generator:${MPGeneVersion}",
+            "freemarker"             : "org.freemarker:freemarker:${freemarker}",
+            "springfoxSwagger2"      : "io.springfox:springfox-swagger2:${springSwaggerUIVersion}",
+            "springfoxSwaggerUi"     : "io.springfox:springfox-swagger-ui:${springSwaggerUIVersion}",
+            "swaggerAnnotations"     : "io.swagger:swagger-annotations:${swaggerVersion}",
+            "log4j"                  : "log4j:log4j:${log4j}",
+            "lombok"                 : "org.projectlombok:lombok:${lombok}",
+            "jasypt"                 : "com.github.ulisesbocchio:jasypt-spring-boot-starter:${jasypt}",
+            "securityCrypto"         : "org.springframework.security:spring-security-crypto:${security}",
+            "jjwt"                   : "io.jsonwebtoken:jjwt:${jjwt}",
+            "hutool"                 : "cn.hutool:hutool-all:${hutool}",
+            "commonPool2"            : "org.apache.commons:commons-pool2:${commonPool2}",
+            "redisson"            : "org.redisson:redisson:${redisson}"
 
     ]
 }

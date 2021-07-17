@@ -1,0 +1,28 @@
+dependencies {
+    compile project(":common-module:common-model")
+    compile project(":common-module:common-redis")
+//    compile "${lib.sbStarterParent}"
+//    compile "${lib.sbStarterActuator}"
+//    compile "${lib.sbStarterWeb}"
+//    compile "${lib.sbDependencies}"
+//    implementation 'org.aspectj:aspectjweaver'
+    compile 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    compile "${lib.sbStarterAop}"
+    compile "${lib.securityCrypto}"
+    compile "${lib.freemarker}"
+    compile "${lib.mysqlConnectorJava}"
+    compile "${lib.sbMybatisPlus}"
+//    compile "${lib.commonPool2}"
+    compile "${lib.mpGenerator}"
+    annotationProcessor "${lib.lombok}"
+    compile("${lib.sbStarterWeb}")
+
+//    compile project(":webpage")
+}
+
+sourceCompatibility = '1.8'
+jar.enabled = true
+
+test {
+    useJUnitPlatform()
+}
