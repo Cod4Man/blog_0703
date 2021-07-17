@@ -7,6 +7,7 @@ import com.codeman.blog0703.constants.AuthConstants;
 import com.codeman.blog0703.constants.GlobalConstants;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authorization.AuthorizationDecision;
@@ -19,7 +20,6 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,9 +31,11 @@ import java.util.Set;
  * @date 2020-05-01
  */
 @Component
-// @AllArgsConstructor
+@AllArgsConstructor
 @Slf4j
 public class ResourceServerManager implements ReactiveAuthorizationManager<AuthorizationContext> {
+
+    private RedisTemplate redisTemplate;
 
     @Override
     public Mono<AuthorizationDecision> check(Mono<Authentication> mono, AuthorizationContext authorizationContext) {
@@ -62,11 +64,7 @@ public class ResourceServerManager implements ReactiveAuthorizationManager<Autho
         log.info("请求方法:RESTFul请求路径：{}", restfulPath);
 
         // 缓存取【URL权限标识->角色集合】权限规则
-        // TODO 先写死，后续改成读数据库，然后再改成读Redis
-        Map<String, Object> permRolesRules = new HashMap<>();
-        // GET:/blog/hello
-        permRolesRules.put("GET:/blog/**", "ROLE_TEST");
-        // Map<String, Object> permRolesRules = redisTemplate.opsForHash().entries(GlobalConstants.URL_PERM_ROLES_KEY);
+        Map<String, Object> permRolesRules = redisTemplate.opsForHash().entries(GlobalConstants.URL_PERM_ROLES_KEY);
 
         // 根据 “请求路径” 和 权限规则中的“URL权限标识”进行Ant匹配，得出拥有权限的角色集合
         Set<String> hasPermissionRoles = CollectionUtil.newHashSet(); // 【声明定义】有权限的角色集合
@@ -85,7 +83,8 @@ public class ResourceServerManager implements ReactiveAuthorizationManager<Autho
         log.info("拥有接口访问权限的角色：{}", hasPermissionRoles.toString());
         // 没有设置权限规则放行；注：如果默认想拦截所有的请求请移除needToCheck变量逻辑即可，根据需求定制
         if (needToCheck == false) {
-            return Mono.just(new AuthorizationDecision(true));
+            // 直接放行
+            return Mono.just(new AuthorizationDecision(false));
         }
 
         // 判断用户JWT中携带的角色是否有能通过权限拦截的角色
@@ -100,10 +99,20 @@ public class ResourceServerManager implements ReactiveAuthorizationManager<Autho
                         return true;
                     }
                     boolean hasPermission = CollectionUtil.isNotEmpty(hasPermissionRoles) && hasPermissionRoles.contains(role); // 用户角色中只要有一个满足则通过权限校验
+                    log.info("用户权限mono.authority.hasPermission : {}", hasPermission); //
                     return hasPermission;
                 })
                 .map(AuthorizationDecision::new)
                 .defaultIfEmpty(new AuthorizationDecision(false));
         return authorizationDecisionMono;
+
+
+        // return mono
+        //         .filter(Authentication::isAuthenticated)
+        //         .flatMapIterable(Authentication::getAuthorities)
+        //         .map(GrantedAuthority::getAuthority)
+        //         .any(hasPermissionRoles::contains)
+        //         .map(AuthorizationDecision::new)
+        //         .defaultIfEmpty(new AuthorizationDecision(false));
     }
 }

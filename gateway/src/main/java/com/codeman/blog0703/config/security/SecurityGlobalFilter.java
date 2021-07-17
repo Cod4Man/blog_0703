@@ -1,51 +1,78 @@
-package com.codeman.blog0703.routh;
+package com.codeman.blog0703.config.security;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.codeman.blog0703.constants.AuthConstants;
-import com.codeman.blog0703.util.LoggerUtil;
+import com.codeman.blog0703.util.ResponseUtils;
+import com.codeman.blog0703.vo.result.ResultCode;
 import com.nimbusds.jose.JWSObject;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.core.Ordered;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
 
 /**
- * @author: zhanghongjie
- * @description:
- * @date: 2021/5/29 10:04
- * @version: 1.0
+ * 安全拦截全局过滤器
+ *
+ * @author haoxr
+ * @date 2020-06-12
  */
 @Component
-public class CommonRouth implements GlobalFilter, Ordered {
+@Slf4j
+public class SecurityGlobalFilter implements GlobalFilter, Ordered {
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    // 是否演示环境
+    @Value("${demo}")
+    private Boolean isDemoEnv;
 
     @SneakyThrows
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
 
+        String path = request.getURI().getPath();
+        if (path.startsWith("/api")) {
+            // 下面将请求体再次封装写回到 request 里,传到下一级.
+            URI eTx = URI.create(path.substring("/api".length()));//修改了请求的路径
+            ServerHttpRequest newRequest = request.mutate().uri(eTx).build();
+            ServerWebExchange newExchange = exchange.mutate().request(newRequest).build();
+            exchange.getAttributes().put(ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR,
+                    newRequest.getURI());
+            exchange = newExchange;
+        }
+
         // 演示环境禁止删除和修改
-        /*if (isDemoEnv
+        if (isDemoEnv
                 && (HttpMethod.DELETE.toString().equals(request.getMethodValue()) // 删除方法
                 || HttpMethod.PUT.toString().equals(request.getMethodValue())) // 修改方法
         ) {
             return ResponseUtils.writeErrorInfo(response, ResultCode.FORBIDDEN_OPERATION);
-        }*/
+        }
 
         // 非JWT或者JWT为空不作处理
         String token = request.getHeaders().getFirst(AuthConstants.AUTHORIZATION_KEY);
-        if (StringUtils.isBlank(token) || !token.startsWith(AuthConstants.AUTHORIZATION_PREFIX)) {
+        if (StrUtil.isBlank(token) || !token.startsWith(AuthConstants.AUTHORIZATION_PREFIX)) {
             return chain.filter(exchange);
         }
 
@@ -55,11 +82,10 @@ public class CommonRouth implements GlobalFilter, Ordered {
         String payload = jwsObject.getPayload().toString();
         JSONObject jsonObject = JSONUtil.parseObj(payload);
         String jti = jsonObject.getStr(AuthConstants.JWT_JTI);
-        // TODO Redis后续操作
-        /*Boolean isBlack = redisTemplate.hasKey(AuthConstants.TOKEN_BLACKLIST_PREFIX + jti);
+        Boolean isBlack = redisTemplate.hasKey(AuthConstants.TOKEN_BLACKLIST_PREFIX + jti);
         if (isBlack) {
             return ResponseUtils.writeErrorInfo(response, ResultCode.TOKEN_ACCESS_FORBIDDEN);
-        }*/
+        }
 
         // 存在token且不是黑名单，request写入JWT的载体信息
         request = exchange.getRequest().mutate()

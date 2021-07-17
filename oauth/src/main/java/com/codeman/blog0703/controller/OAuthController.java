@@ -1,8 +1,9 @@
 package com.codeman.blog0703.controller;
 
-import com.codeman.blog0703.entity.User;
-import com.codeman.blog0703.service.IAuthService;
-import com.codeman.blog0703.vo.OAuthToken;
+import cn.hutool.json.JSONObject;
+import com.codeman.blog0703.constants.AuthConstants;
+import com.codeman.blog0703.enums.OAuthClientEnum;
+import com.codeman.blog0703.util.JwtUtils;
 import com.codeman.blog0703.vo.result.Result;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -10,10 +11,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,18 +30,18 @@ import java.security.KeyPair;
 import java.security.Principal;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Api(tags = "认证中心")
 @RestController
 @RequestMapping("/oauth")
+@AllArgsConstructor
 @Slf4j
 public class OAuthController {
 
-    @Autowired
     private TokenEndpoint tokenEndpoint;
-    @Autowired
-    private IAuthService authService;
-    @Autowired
+    // private IAuthService wechatAuthService;
+    private RedisTemplate redisTemplate;
     private KeyPair keyPair;
 
     @ApiOperation(value = "OAuth2认证", notes = "login")
@@ -63,26 +66,24 @@ public class OAuthController {
          * 方式一：client_id、client_secret放在请求路径中(注：当前版本已废弃)
          * 方式二：放在请求头（Request Headers）中的Authorization字段，且经过加密，例如 Basic Y2xpZW50OnNlY3JldA== 明文等于 client:secret
          */
-        /*String clientId = JwtUtils.getAuthClientId();
+        String clientId = JwtUtils.getAuthClientId();
         OAuthClientEnum client = OAuthClientEnum.getByClientId(clientId);
         switch (client) {
-            case TEST: // knife4j接口测试文档使用 client_id/clien client/123456
+            case TEST: // knife4j接口测试文档使用 client_id/client_secret : client/123456
                 return tokenEndpoint.postAccessToken(principal, parameters).getBody();
             default:
                 return Result.success(tokenEndpoint.postAccessToken(principal, parameters).getBody());
-        }*/
-        return Result.success(tokenEndpoint.postAccessToken(principal, parameters).getBody());
+        }
     }
 
-    @ApiOperation(value = "登录")
-    @ApiImplicitParam(name = "code", value = "小程序授权code", paramType = "path")
+    /*@ApiOperation(value = "微信授权登录")
+    @ApiImplicitParam(name = "code",  value = "小程序授权code",paramType = "path")
     @PostMapping("/token/{code}")
-    public Result<OAuthToken> wechatLogin(@PathVariable String code, @RequestBody User userInfo) {
-        OAuthToken token = authService.login(code, userInfo);
+    public Result wechatLogin(@PathVariable String code, @RequestBody UserInfo userInfo) {
+        OAuthToken token = wechatAuthService.login(code, userInfo);
         return Result.success(token);
-    }
+    }*/
 
-    /*
     @ApiOperation(value = "注销", notes = "logout")
     @DeleteMapping("/logout")
     public Result logout() {
@@ -98,7 +99,7 @@ public class OAuthController {
             redisTemplate.opsForValue().set(AuthConstants.TOKEN_BLACKLIST_PREFIX + jti, null);
         }
         return Result.success("注销成功");
-    }*/
+    }
 
     @ApiOperation(value = "获取公钥", notes = "login")
     @GetMapping("/public-key")
