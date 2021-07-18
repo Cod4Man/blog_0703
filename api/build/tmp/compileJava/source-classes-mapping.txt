@@ -1,6 +1,0 @@
-com/codeman/blog0703/api/fallback/UserFeignFallbackClient.java
- com.codeman.blog0703.api.fallback.UserFeignFallbackClient
-com/codeman/blog0703/api/OAuthClientFeignClient.java
- com.codeman.blog0703.api.OAuthClientFeignClient
-com/codeman/blog0703/api/UserFeignClient.java
- com.codeman.blog0703.api.UserFeignClient

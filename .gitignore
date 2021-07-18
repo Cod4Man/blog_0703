@@ -1,14 +1,13 @@
 # Project exclude paths
 /.gradle/
-/blog/build/
-/blog/build/classes/java/main/
-/common/build/
-/common/build/classes/java/main/
-/gateway/build/
-/gateway/build/classes/java/main/
+/**/build/
+#/blog/build/classes/java/main/
+#/common/build/
+#/common/build/classes/java/main/
+#/gateway/build/
+#/gateway/build/classes/java/main/
 /user/.gradle/
-/user/build/
-/user/build/classes/java/main/
-/log/blog0703.log
+#/user/build/
+#/user/build/classes/java/main/
 /gradle/wrapper/gradle-wrapper.jar
 /gradle/wrapper/gradle-wrapper.properties
