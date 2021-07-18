@@ -1,5 +1,6 @@
 package com.codeman.blog0703.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.codeman.blog0703.entity.Role;
 import com.codeman.blog0703.entity.User;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author Zhanghongjie
@@ -36,15 +37,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     public User user(String username) {
         User user = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getName, username));
-        List<UserRoleRelation> userRoleRelations = userRoleRelationMapper.selectList(
-                new LambdaQueryWrapper<UserRoleRelation>()
-                        .eq(UserRoleRelation::getUserId, user.getUserId())
-        );
-        user.setRoles(roleMapper.selectBatchIds(
-                userRoleRelations.stream()
-                .map(UserRoleRelation::getRoleId)
-                .collect(Collectors.toList())
-        ));
+        if (user != null) {
+            List<UserRoleRelation> userRoleRelations = userRoleRelationMapper.selectList(
+                    new LambdaQueryWrapper<UserRoleRelation>()
+                            .eq(UserRoleRelation::getUserId, user.getUserId())
+            );
+            if (CollectionUtil.isNotEmpty(userRoleRelations)) {
+                user.setRoles(roleMapper.selectBatchIds(
+                        userRoleRelations.stream()
+                                .map(UserRoleRelation::getRoleId)
+                                .collect(Collectors.toList())
+                ));
+            }
+        }
         return user;
     }
 

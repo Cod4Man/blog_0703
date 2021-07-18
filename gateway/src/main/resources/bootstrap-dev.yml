@@ -8,3 +8,11 @@ spring:
         file-extension: yml #指定yaml格式的配置
         group: BLOG0703_GROUP  # group
         namespace: 9405665c-0bfa-4760-9411-4c15310c0e4a # namespace
+        sharedConfigs[0]: # 2.2.5
+          data-id: common-config.yml
+          group: BLOG0703_GROUP
+          refresh: true
+        extensionConfigs[0]: # 2.2.5
+          data-id: common-redis-config.yml
+          group: BLOG0703_GROUP
+          refresh: true

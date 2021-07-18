@@ -46,3 +46,5 @@ com/codeman/blog0703/util/PasswordEncoderUtil.java
  com.codeman.blog0703.util.PasswordEncoderUtil
 com/codeman/blog0703/util/LoggerUtil.java
  com.codeman.blog0703.util.LoggerUtil
+com/codeman/blog0703/handler/GlobalExceptionHandler.java
+ com.codeman.blog0703.handler.GlobalExceptionHandler

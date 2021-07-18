@@ -9,7 +9,7 @@ ext {
     springBootVersion = '2.2.2.RELEASE'
     springVersion = '5.2.2.RELEASE'
     springCloudVersion = 'Hoxton.SR1'
-    springCloudAlibabaVersion = '2.1.0.RELEASE'
+    springCloudAlibabaVersion = '2.2.5.RELEASE'
     lombok = "1.16.18"
     mysqlConnJavaVersion = "8.0.11"
     druidVersion = "1.1.21"
@@ -25,6 +25,7 @@ ext {
     hutool = "5.5.8"
     commonPool2 = "2.9.0"
     redisson = "3.15.1"
+    apacheCommonLang3 = "3.12.0"
 
     lib = [
             "sbStarterWeb"           : "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
@@ -53,7 +54,8 @@ ext {
             "jjwt"                   : "io.jsonwebtoken:jjwt:${jjwt}",
             "hutool"                 : "cn.hutool:hutool-all:${hutool}",
             "commonPool2"            : "org.apache.commons:commons-pool2:${commonPool2}",
-            "redisson"            : "org.redisson:redisson:${redisson}"
+            "redisson"               : "org.redisson:redisson:${redisson}",
+            "apacheCommonLang3"      : "org.apache.commons:commons-lang3:${apacheCommonLang3}"
 
     ]
 }
@@ -90,6 +92,8 @@ subprojects {
     dependencies {
 //        对于一些公共的，可以直接定义在父类
         implementation "${lib.log4j}"
+        implementation "${lib.sbStarterTest}"
+        implementation "${lib.apacheCommonLang3}"
 
 //        annotationProcessor "${lib.lombok}"
     }

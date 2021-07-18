@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.util.List;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,6 +39,8 @@ public class User implements Serializable {
 
     private String password;
 
+    @TableField(fill = FieldFill.INSERT)
+    @TableLogic
     private Boolean useabled;
 
     private String phoneNum;

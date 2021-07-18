@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,6 +34,8 @@ public class Role implements Serializable {
 
     private String roleCd;
 
+    @TableField(fill = FieldFill.INSERT)
+    @TableLogic
     private Boolean useabled;
 
     @TableField(fill = FieldFill.INSERT)

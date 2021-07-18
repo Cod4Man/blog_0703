@@ -13,6 +13,10 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         this.setFieldValByName("createTime", LocalDateTime.now(), metaObject);
         this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
+        //添加乐观锁默认值是1
+        // this.setFieldValByName("version",1,metaObject);
+        //添加逻辑删除的默认值0
+        this.setFieldValByName("useabled", true, metaObject);
     }
 
     @Override

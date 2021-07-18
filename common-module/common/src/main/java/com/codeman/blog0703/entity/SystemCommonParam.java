@@ -1,6 +1,10 @@
 package com.codeman.blog0703.entity;
 
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,6 +32,8 @@ public class SystemCommonParam implements Serializable {
 
     private String desc;
 
+    @TableField(fill = FieldFill.INSERT)
+    @TableLogic
     private Boolean useabled;
 
 

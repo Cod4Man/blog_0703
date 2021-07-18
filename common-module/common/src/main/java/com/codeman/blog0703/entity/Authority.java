@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.util.List;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,6 +31,8 @@ public class Authority implements Serializable {
     @TableId(value = "auth_id", type = IdType.AUTO)
     private Integer authId;
 
+    @TableField(fill = FieldFill.INSERT)
+    @TableLogic
     private Boolean useabled;
 
     private String authMenuName;

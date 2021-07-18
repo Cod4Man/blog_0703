@@ -1,7 +1,6 @@
 #server:
 #  port: 8001
 
-
 spring:
   application:
     name: USER
@@ -10,8 +9,27 @@ spring:
       config:
         server-addr: 47.106.198.206:8848 #Nacos作为配置中心地址
         file-extension: yml #指定yaml格式的配置
+#        prefix: ${spring.application.name}
         group: BLOG0703_GROUP  # group
         namespace: 9405665c-0bfa-4760-9411-4c15310c0e4a # namespace
+#        extConfig: # 2.1.0
+#          - data-id: common-config.yml
+#            group: BLOG0703_GROUP
+#            refresh: true
+        sharedConfigs[0]: # 2.2.5
+          data-id: common-config.yml
+          group: BLOG0703_GROUP
+          refresh: true
+        extensionConfigs[0]:  # 2.2.5
+          data-id: common-redis-config.yml
+          group: BLOG0703_GROUP
+          refresh: true
+        extensionConfigs[1]:  # 2.2.5
+          data-id: common-mysql-config.yml
+          group: BLOG0703_GROUP
+          refresh: true
+#        shared-dataids: common-config.yml,common-config-dev.yml #,shareconfig2.yml
+#        refreshable-dataids: common-config.yml,common-config-dev.yml #,shareconfig2.yml
     #    sentinel:
     #      transport:
     #        dashboard: 192.168.1.170:8181 #配置Sentinel dashboard地址
